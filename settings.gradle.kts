@@ -21,3 +21,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "Modular Users"
 include(":app")
+include(":core-data")
+include(":feature-user")
+include(":core-domain")
