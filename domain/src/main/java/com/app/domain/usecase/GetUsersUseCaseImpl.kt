@@ -7,5 +7,5 @@ import javax.inject.Inject
 class GetUsersUseCaseImpl @Inject constructor(
     private val userRepository: UserRepository
 ) : GetUsersUseCase {
-    override suspend fun invoke(): List<User> = userRepository.getUsers()
+    override suspend fun invoke(): User = userRepository.getUsers()
 }
