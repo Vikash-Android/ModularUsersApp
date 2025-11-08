@@ -61,8 +61,9 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
 
-    // For ViewModel injection
+    // For ViewModel
     implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
 //     Compose BOM (keeps all Compose libraries in sync)
     implementation (platform(libs.androidx.compose.bom))
@@ -75,7 +76,10 @@ dependencies {
     implementation (libs.androidx.ui.tooling.preview)
     implementation (libs.androidx.foundation)
     implementation (libs.androidx.runtime)
+    implementation(libs.androidx.lifecycle.runtime.compose)
 
 //    Coil
     implementation(libs.io.coil.kt.coil.compose)
+//    Coroutine
+    implementation(libs.kotlinx.coroutines.android)
 }

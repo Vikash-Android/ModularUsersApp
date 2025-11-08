@@ -22,6 +22,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,25 +32,36 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.app.domain.models.Details
+import com.vikash.common_ui.ErrorView
+import com.vikash.common_ui.LoadingView
 import com.vikash.common_ui.UserTopbar
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UserScreen() {
+fun UserScreen(viewModel: UserViewModel = hiltViewModel()) {
+
+    val uiState by viewModel.uiState.collectAsState()
+
     Scaffold(
         topBar = {
             UserTopbar("Users")
         },
         content = { padding ->
-            UserList(padding)
+            when(uiState) {
+                is UserUiState.Loading -> LoadingView()
+                is UserUiState.Error -> ErrorView((uiState as UserUiState.Error).message)
+                is UserUiState.Success -> UserList(padding, (uiState as UserUiState.Success).users)
+            }
         }
     )
 }
 
 @Composable
-fun UserList(padding: PaddingValues) {
+fun UserList(padding: PaddingValues, users: List<Details>) {
     LazyVerticalStaggeredGrid(
         modifier = Modifier
             .fillMaxSize()
@@ -61,10 +74,11 @@ fun UserList(padding: PaddingValues) {
         columns = StaggeredGridCells.Fixed(2)
     ) {
         items(
-            count = 10,
-            key = { index -> "id${index}" },
+            count = users.size,
+            key = { index -> users[index].id },
             contentType = { index -> Details::class.java },
             itemContent = { index ->
+                val detail = users[index]
                 Box(
                     modifier = Modifier.fillMaxWidth(0.5f).padding(top = 20.dp),
                     contentAlignment = Alignment.Center
@@ -82,23 +96,19 @@ fun UserList(padding: PaddingValues) {
                     ) {
                             Column(modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = 80.dp, bottom = 16.dp),
+                                .padding(top = 80.dp, bottom = 16.dp, start = 8.dp, end = 8.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text(
-                                    text = "name",
+                                    text = detail.name,
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color =  MaterialTheme.colorScheme.onBackground
-                                )
-                                Text(
-                                    text = "email",
-                                    fontSize = 14.sp,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = Color(0xFF00796B)
+                                    color =  MaterialTheme.colorScheme.onBackground,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
                                 )
 
                                 Text(
-                                    text = "company",
+                                    text = detail.username,
                                     fontSize = 12.sp,
                                     style = MaterialTheme.typography.bodySmall,
                                     color = Color.Gray,
@@ -110,12 +120,12 @@ fun UserList(padding: PaddingValues) {
                             }
                         }
                     AsyncImage(
-                        model = "https://json-server.dev/ai-profiles/94.png",
-                        contentDescription = "User Image",
+                        model = detail.photo,
+                        contentDescription = detail.name,
                         modifier = Modifier
                             .align(Alignment.TopCenter)
                             .offset( y = (-20).dp)
-                            .size(100.dp)
+                            .size(80.dp)
                             .clip(CircleShape)
                             .border(
                                 width = 2.dp,
