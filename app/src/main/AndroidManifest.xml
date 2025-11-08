@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ModularUsers">
         <activity
-            android:name="com.app.ui.UserActivity"
+            android:name=".ui.RootActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
