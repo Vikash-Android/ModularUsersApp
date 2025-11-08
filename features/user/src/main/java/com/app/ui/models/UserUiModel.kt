@@ -1,6 +1,10 @@
-package com.app.domain.models
+package com.app.ui.models
 
-data class Details(
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+data class UserUiModel(
     val id: Int,
     val name: String,
     val email: String,
@@ -9,4 +13,5 @@ data class Details(
     val country: String,
     val phone: String,
     val username: String
-)
+): Parcelable {
+}

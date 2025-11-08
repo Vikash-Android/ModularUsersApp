@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.app.domain.models.Details
+import com.app.ui.models.UserUiModel
 import com.vikash.common_ui.ErrorView
 import com.vikash.common_ui.LoadingView
 import com.vikash.common_ui.UserTopbar
@@ -42,7 +43,10 @@ import com.vikash.common_ui.UserTopbar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UserScreen(viewModel: UserViewModel = hiltViewModel()) {
+fun UserScreen(
+    viewModel: UserViewModel = hiltViewModel(),
+    goToDetailScreen: (userDetail: UserUiModel) -> Unit
+) {
 
     val uiState by viewModel.uiState.collectAsState()
 
@@ -51,17 +55,25 @@ fun UserScreen(viewModel: UserViewModel = hiltViewModel()) {
             UserTopbar("Users")
         },
         content = { padding ->
-            when(uiState) {
+            when (uiState) {
                 is UserUiState.Loading -> LoadingView()
                 is UserUiState.Error -> ErrorView((uiState as UserUiState.Error).message)
-                is UserUiState.Success -> UserList(padding, (uiState as UserUiState.Success).users)
+                is UserUiState.Success -> UserList(
+                    padding,
+                    (uiState as UserUiState.Success).users,
+                    goToDetailScreen
+                )
             }
         }
     )
 }
 
 @Composable
-fun UserList(padding: PaddingValues, users: List<Details>) {
+fun UserList(
+    padding: PaddingValues,
+    users: List<UserUiModel>,
+    goToDetailScreen: (userDetail: UserUiModel) -> Unit
+) {
     LazyVerticalStaggeredGrid(
         modifier = Modifier
             .fillMaxSize()
@@ -80,7 +92,9 @@ fun UserList(padding: PaddingValues, users: List<Details>) {
             itemContent = { index ->
                 val detail = users[index]
                 Box(
-                    modifier = Modifier.fillMaxWidth(0.5f).padding(top = 20.dp),
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f)
+                        .padding(top = 20.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Card(
@@ -91,40 +105,42 @@ fun UserList(padding: PaddingValues, users: List<Details>) {
                         elevation = CardDefaults.cardElevation(4.dp),
                         colors = CardDefaults.cardColors(contentColor = Color.White),
                         onClick = {
-
+                            goToDetailScreen(detail)
                         }
                     ) {
-                            Column(modifier = Modifier
+                        Column(
+                            modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(top = 80.dp, bottom = 16.dp, start = 8.dp, end = 8.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text(
-                                    text = detail.name,
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color =  MaterialTheme.colorScheme.onBackground,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = detail.name,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onBackground,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
 
-                                Text(
-                                    text = detail.username,
-                                    fontSize = 12.sp,
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = Color.Gray,
-                                    minLines = 2,
-                                    maxLines = 2,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                                Spacer(modifier = Modifier.height(8.dp))
-                            }
+                            Text(
+                                text = detail.username,
+                                fontSize = 12.sp,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = Color.Gray,
+                                minLines = 2,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
                         }
+                    }
                     AsyncImage(
                         model = detail.photo,
                         contentDescription = detail.name,
                         modifier = Modifier
                             .align(Alignment.TopCenter)
-                            .offset( y = (-20).dp)
+                            .offset(y = (-20).dp)
                             .size(80.dp)
                             .clip(CircleShape)
                             .border(
@@ -133,7 +149,7 @@ fun UserList(padding: PaddingValues, users: List<Details>) {
                                 shape = CircleShape
                             )
                     )
-                    }
+                }
             }
         )
     }

@@ -5,9 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.app.data.model.UserData
+import com.app.domain.models.Details
 import com.app.domain.models.ErrorType
 import com.app.domain.models.User
 import com.app.domain.usecase.GetUsersUseCase
+import com.app.ui.models.UserUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,7 +36,7 @@ class UserViewModel @Inject constructor(
             try {
                 when(val result = getUsersUseCase()) {
                     is User.Success -> {
-                        _uiState.value = UserUiState.Success(result.userDetails)
+                        _uiState.value = UserUiState.Success(result.userDetails.map{ it.toUiUser()})
                     }
 
                     is User.Error -> {
@@ -47,5 +50,18 @@ class UserViewModel @Inject constructor(
                 _uiState.value = UserUiState.Error("Unexpected Error: ${e.message}")
             }
         }
+    }
+
+    private fun Details.toUiUser() = with(this) {
+        UserUiModel(
+            id = id,
+            name = name,
+            email = email,
+            photo = photo,
+            company = company,
+            country = country,
+            phone = phone,
+            username = username
+        )
     }
 }
