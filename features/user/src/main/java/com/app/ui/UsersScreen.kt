@@ -57,7 +57,7 @@ fun UserScreen(
         content = { padding ->
             when (uiState) {
                 is UserUiState.Loading -> LoadingView()
-                is UserUiState.Error -> ErrorView((uiState as UserUiState.Error).message)
+                is UserUiState.Error -> ErrorView((uiState as UserUiState.Error).message, {viewModel.fetchUser()})
                 is UserUiState.Success -> UserList(
                     padding,
                     (uiState as UserUiState.Success).users,
