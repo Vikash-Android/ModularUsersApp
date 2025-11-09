@@ -2,7 +2,11 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="11">
+      <module name="Modular_Users.app" target="21" />
+      <module name="Modular_Users.data" target="21" />
       <module name="Modular_Users.feature-user" target="21" />
+      <module name="Modular_Users.features.common-ui" target="21" />
+      <module name="Modular_Users.features.user" target="21" />
     </bytecodeTargetLevel>
   </component>
 </project>

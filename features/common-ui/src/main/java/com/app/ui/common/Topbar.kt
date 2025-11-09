@@ -1,4 +1,4 @@
-package com.vikash.common_ui
+package com.app.ui.common
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack

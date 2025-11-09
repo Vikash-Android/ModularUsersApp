@@ -12,9 +12,17 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-    private val retrofit  = Retrofit.Builder().baseUrl("https://fake-json-api.mock.beeceptor.com").addConverterFactory(GsonConverterFactory.create()).build()
+
+    private const val BASE_URL = "https://fake-json-api.mock.beeceptor.com"
 
     @Provides
     @Singleton
-    fun provideRetrofit() = retrofit.create(ApiService::class.java)
+    fun provideRetrofit(): Retrofit = Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    @Provides
+    @Singleton
+    fun provideApiService(retrofit: Retrofit): ApiService = retrofit.create(ApiService::class.java)
 }
