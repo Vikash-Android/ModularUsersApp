@@ -19,7 +19,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Modular Users"
+rootProject.name = "UserApp"
 include(":app")
 include(":data")
 include(":features:user")

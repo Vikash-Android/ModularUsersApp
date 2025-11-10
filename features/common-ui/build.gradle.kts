@@ -6,11 +6,10 @@ plugins {
 }
 
 android {
-    namespace = "com.vikash.common_ui"
+    namespace = "com.app.ui.common"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.vikash.common_ui"
         minSdk = 24
         targetSdk = 36
         versionCode = 1

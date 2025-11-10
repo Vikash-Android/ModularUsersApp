@@ -1,20 +1,19 @@
-package com.app.ui
+package com.app.ui.presentation
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.app.data.model.UserData
 import com.app.domain.models.Details
 import com.app.domain.models.ErrorType
 import com.app.domain.models.User
 import com.app.domain.usecase.GetUsersUseCase
 import com.app.ui.models.UserUiModel
+import com.app.ui.presentation.state.ScreenState
+import com.app.ui.presentation.state.UserUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,32 +22,31 @@ class UserViewModel @Inject constructor(
     private val getUsersUseCase: GetUsersUseCase
 ) : ViewModel() {
 
-    private var _uiState = MutableStateFlow<UserUiState>(UserUiState.Loading)
+    private val _uiState: MutableStateFlow<UserUiState> = MutableStateFlow(UserUiState())
     val uiState: StateFlow<UserUiState> = _uiState.asStateFlow()
-    init {
-        fetchUser()
-    }
 
-    fun fetchUser() {
+    internal fun fetchUser() {
         viewModelScope.launch {
-            _uiState.value = UserUiState.Loading
-
-            try {
-                when(val result = getUsersUseCase()) {
-                    is User.Success -> {
-                        _uiState.value = UserUiState.Success(result.userDetails.map{ it.toUiUser()})
-                    }
-
-                    is User.Error -> {
-                        _uiState.value = when(result.errorType) {
-                            ErrorType.NoInternet -> UserUiState.Error("No Internet Connection")
-                            ErrorType.GenricError -> UserUiState.Error("Something went wrong")
-                        }
+            _uiState.update { it.copy(screenState = ScreenState.LOADING) }
+            when (val result = getUsersUseCase()) {
+                is User.Success -> {
+                    _uiState.update {
+                        it.copy(
+                            screenState = ScreenState.SUCCESS,
+                            users = result.userDetails.map { user -> user.toUiUser() }
+                        )
                     }
                 }
-            } catch (e: Exception) {
-                _uiState.value = UserUiState.Error("Unexpected Error: ${e.message}")
+
+                is User.Error -> handleError(result.errorType)
             }
+        }
+    }
+
+    private fun handleError(errorType: ErrorType) {
+        when (errorType) {
+            ErrorType.NoInternet -> _uiState.update { it.copy(screenState = ScreenState.NETWORK_ERROR) }
+            ErrorType.GenricError -> _uiState.update { it.copy(screenState = ScreenState.GENRIC_ERROR) }
         }
     }
 

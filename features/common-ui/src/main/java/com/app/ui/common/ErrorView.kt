@@ -1,7 +1,12 @@
-package com.vikash.common_ui
+package com.app.ui.common
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -13,8 +18,8 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ErrorView(
-    message: String = "Something went wrong",
-    onRetry: (() -> Unit)? = null
+    message: String,
+    onRetry: (() -> Unit)
 ) {
     Box(
         modifier = Modifier
@@ -32,10 +37,8 @@ fun ErrorView(
                 style = MaterialTheme.typography.bodyMedium
             )
             Spacer(modifier = Modifier.height(16.dp))
-            onRetry?.let {
-                Button(onClick = it) {
-                    Text("Retry")
-                }
+            Button(onClick = onRetry) {
+                Text("Retry")
             }
         }
     }
