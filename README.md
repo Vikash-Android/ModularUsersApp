@@ -27,7 +27,11 @@ The project is divided into several modules, each with a specific responsibility
   - **`:features:user`**: Contains all the UI and logic related to displaying the list of users.
   - **`:features:common-ui`**: A module with shared Jetpack Compose components, themes, and resources that are used across multiple feature modules to ensure a consistent UI.
 
-## Modules[Screen_recording_20251110_211001.mp4](../../../Screen_recording_20251110_211001.mp4)
+## Modules 
+
+https://github.com/user-attachments/assets/f00de085-0012-4ff1-b2bd-8e4b2da279da
+
+
 
 ### Dependency Graph
 
