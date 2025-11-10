@@ -1,0 +1,91 @@
+import org.gradle.kotlin.dsl.implementation
+
+plugins {
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    id("com.google.dagger.hilt.android")
+    id("org.jetbrains.kotlin.plugin.compose") version "2.2.21"
+    id("kotlin-parcelize")
+    kotlin("kapt")
+}
+
+android {
+    namespace = "com.app.ui"
+    compileSdk = 36
+
+    defaultConfig {
+        minSdk = 24
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
+    }
+
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.15"
+    }
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+    kotlinOptions {
+        jvmTarget = "11"
+    }
+}
+
+dependencies {
+    implementation(project(":domain"))
+    implementation(project(":data"))
+    implementation(project(":features:common-ui"))
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.material3)
+
+//    Testing
+    testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
+    testImplementation(libs.turbine)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+
+    //    hilt injection
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+
+    // For ViewModel
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+
+//     Compose BOM (keeps all Compose libraries in sync)
+    implementation (platform(libs.androidx.compose.bom))
+
+    // Material 3
+    implementation (libs.material3)
+
+    // Core Compose UI libs
+    implementation (libs.androidx.ui)
+    implementation (libs.androidx.ui.tooling.preview)
+    implementation (libs.androidx.foundation)
+    implementation (libs.androidx.runtime)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+
+//    Coil
+    implementation(libs.io.coil.kt.coil.compose)
+//    Coroutine
+    implementation(libs.kotlinx.coroutines.android)
+}

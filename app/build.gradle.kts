@@ -2,15 +2,16 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("com.google.dagger.hilt.android")
+    id("org.jetbrains.kotlin.plugin.compose") version "2.2.21"
     kotlin("kapt")
 }
 
 android {
-    namespace = "com.vikash.modularusersapp"
+    namespace = "com.app.user"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.vikash.modularusersapp"
+        applicationId = "com.app.user"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -38,7 +39,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":feature-user"))
+    implementation(project(":features:user"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -52,4 +53,16 @@ dependencies {
 
     // For ViewModel injection
     implementation(libs.androidx.hilt.navigation.compose)
+
+    //     Compose BOM (keeps all Compose libraries in sync)
+    implementation (platform(libs.androidx.compose.bom))
+
+    // Material 3
+    implementation (libs.material3)
+
+    // Core Compose UI libs
+    implementation (libs.androidx.ui)
+    implementation (libs.androidx.ui.tooling.preview)
+    implementation (libs.androidx.foundation)
+    implementation (libs.androidx.runtime)
 }
